@@ -78,6 +78,25 @@ $app->get('/picker', function ($request, $response, $args) {
     ]);
 })->setName('picker');
 
+$app->post('/picker', function ($request, $response, $args) {
+    if (!isLoggedIn()) {
+        return $response->withStatus(302)->withHeader('Location', '/login');
+    }
+
+    global $database;
+
+    $student_id = $_COOKIE['student_id'];
+
+    $data = $request->getParsedBody();
+    $success = addStudent($student_id, $data['subject'], $data['termin']);
+
+    if ($success == true) {
+        return $response->withStatus(302)->withHeader('Location', '/success');
+    } else {
+        return $response->withStatus(302)->withHeader('Location', '/error');
+    }
+})->setName('picker-post');
+
 $app->get('/api/termin/{id}', function ($request, $response, $args) {
     global $database;
     
@@ -92,11 +111,26 @@ $app->get('/api/termin/{id}', function ($request, $response, $args) {
 
     return $newResponse;
 })->setName('termin-info');
+
+$app->get('/success', function ($request, $response, $args) {
+    return $this->view->render($response, 'success.html', [
+        'title' => 'WBDG Team :: Uspešno',
+        'auth' => isLoggedIn()
+    ]);
+})->setName('success');
+
+$app->get('/error', function ($request, $response, $args) {
+    return $this->view->render($response, 'error.html', [
+        'title' => 'WBDG Team :: Napaka',
+        'auth' => isLoggedIn()
+    ]);
+})->setName('success');
 // }}}
 
 $app->run();
 
 // {{{ Helper methods
+
 function getClassesByStudent($id) {
     $source = file_get_contents("https://urnik.fri.uni-lj.si/timetable/2015_2016_letni/allocations?student=$id");
 
@@ -123,6 +157,70 @@ function getClassesByStudent($id) {
     }
 
     return $subjects;
+}
+
+function addStudent($id, $subject, $wants) {
+    $dayToId = [
+        'ponedeljek' => 1,
+        'torek' => 2,
+        'sreda' => 3,
+        'četrtek' => 4,
+        'petek' => 5
+    ];
+
+    $source = file_get_contents("https://urnik.fri.uni-lj.si/timetable/2015_2016_letni/allocations?activity=$subject&student=$id");
+
+    $doc = new DOMDocument();
+    $internalErrors = libxml_use_internal_errors(true);
+    $doc->loadHTML($source);
+    $trs = $doc->getElementsByTagName('tr');
+
+    foreach ($trs as $tr) {
+        $tds = $tr->getElementsByTagName('td');
+        foreach ($tds as $td) {
+            $spans = $td->getElementsByTagName('span');
+            if ($spans->length == 0) {
+                continue;
+            }
+
+            $arr = explode(" ", trim($spans->item(0)->nodeValue), 3);
+            $day = $dayToId[$arr[0]];
+            $hour = explode(":", $arr[1])[0];
+
+            $as = $td->getElementsByTagName('a');
+            $classroom = $as->item(1)->nodeValue;
+
+            insertStudent($id, $subject, $day, $hour, $classroom, $wants);
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function insertStudent($id, $subject, $day, $hour, $room, $wants) {
+    global $database;
+
+    $classQuery = $database->prepare("SELECT * FROM termin INNER JOIN subject ON termin.subject_id=subject.id WHERE id_fri=$subject AND day=$day AND hour=$hour AND room='$room' LIMIT 1");
+    $classQuery->execute();
+    $class_ = $classQuery->fetchAll();
+
+    $insertStud = $database->prepare("INSERT INTO student(term_id, student_id) VALUES (:tid, :sid)");
+    $insertStud->bindParam(":tid", $class_[0][0]);
+    $insertStud->bindParam(":sid", $id);
+    $insertStud->execute();
+
+    $c = $class_[0][0];
+    $selectStud = $database->prepare("SELECT * FROM student WHERE student_id=$id AND term_id=$c LIMIT 1");
+    $selectStud->execute();
+    $student = $selectStud->fetchAll();
+
+    foreach ($wants as $w) {
+        $insert = $database->prepare("INSERT INTO swap(student_id, termin_id) VALUES (:sid, :tid)");
+        $insert->bindParam(":sid", $student[0]["id"]);
+        $insert->bindParam(":tid", $w);
+        $insert->execute();
+    }
 }
 
 function isLoggedIn() {

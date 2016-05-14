@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block body %}
-  <form class="form-horizontal col-sm-offset-3">
+  <form class="form-horizontal col-sm-offset-3" action="{{ path_for("picker-post") }}" method="POST">
     <div class="form-group">
       <label for="subject" class="col-sm-2 control-label">Predmet</label>
       <div class="col-sm-4">
@@ -20,10 +20,24 @@
         Prosimo izberite predmet (dopolnimo z JS).
       </div>
     </div>
+
+    <div class="form-group">
+      <div class="col-sm-offset-2">
+        <button type="submit" class="btn btn-default hidden">Potrdi</button>
+      </div>
+    </div>
   </form>
 {% endblock %}
 
 {% block js %}
+var day_id = {
+  1: 'Ponedeljek',
+  2: 'Torek',
+  3: 'Sreda',
+  4: 'Četrtek',
+  5: 'Petek'
+};
+
 $('#subject').change(function() {
   $.ajax({
     url: '/api/termin/' + $(this).val(),
@@ -31,10 +45,11 @@ $('#subject').change(function() {
   .done(function(data) {
     var html = ""
     for (var i = 0; i < data.length; i++) {
-      html += '<div class="checkbox"><label><input type="checkbox" value="'+ data[i].id +'">'+ data[i].hour+ ':00 v '+ data[i].room +'</label></div>';
+      html += '<div class="checkbox"><label><input type="checkbox" value="'+ data[i].id +'" name="termin[]">'+ day_id[data[i].day] +', '+ data[i].hour+ ':00 v '+ data[i].room +'</label></div>';
     }
 
     $("#termin-holder").html(html);
+    $("button[type='submit']").removeClass("hidden");
   });
 });
 {% endblock %}
