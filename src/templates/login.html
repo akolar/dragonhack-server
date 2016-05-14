@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block body %}
+  <form class="form-signin" role="form" method="POST" action="{{ path_for('process_login') }}">
+  <h3 class="form-signin-heading">Prijava</h3>
+
+  <div class="form-group">
+    <input type="text" name="student_id" class="form-control" placeholder="Vpisna številka">
+  </div>
+
+  <button class="btn btn-lg btn-primary btn-block" type="submit">Prijavi se</button>
+
+</form>
+{% endblock body %}

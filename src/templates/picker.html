@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block body %}
+  <form class="form-horizontal col-sm-offset-3">
+    <div class="form-group">
+      <label for="subject" class="col-sm-2 control-label">Predmet</label>
+      <div class="col-sm-4">
+        <select class="form-control" id="subject" name="subject">
+        {% for subj in class_info %}
+          <option value="{{ subj.id }}">{{ subj.name }}</option>
+        {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="termins" class="col-sm-2 control-label">Termini</label>
+      <div class="col-sm-4">
+        Prosimo izberite predmet (dopolnimo z JS).
+      </div>
+    </div>
+  </form>
+{% endblock %}
