@@ -1,5 +1,13 @@
 <?php
 // {{{ Slim config
+$db['host'] = 'localhost';
+$db['user'] = 'root';
+$db['pass'] = 'toor';
+$db['db']   = 'dragonhack';
+$database = new PDO('mysql:dbname='.$db['db'].';host='.$db['host'], 
+    $db['user'], $db['pass'], 
+    array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
+
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
@@ -27,10 +35,6 @@ $container['view'] = function ($container) {
     return $view;
 };
 // }}}
-
-function isLoggedIn() {
-    return isset($_COOKIE['student_id']);
-}
 
 // {{{ Main
 $app->get('/', function ($request, $response, $args) {
@@ -73,10 +77,24 @@ $app->get('/picker', function ($request, $response, $args) {
         'auth' => isLoggedIn()
     ]);
 })->setName('picker');
+
+$app->get('/api/termin/{id}', function ($request, $response, $args) {
+    global $database;
+    
+    $cl_id = $args['id'];
+    $classQuery = $database->prepare("SELECT t.day, t.id, t.hour, t.room FROM termin t INNER JOIN subject s ON t.subject_id=s.id WHERE s.id_fri=$cl_id");
+    $classQuery->execute();
+    $class_ = $classQuery->fetchAll();
+
+    $newResponse = $response->withHeader('Content-type', 'application/json');
+    $body = $newResponse->getBody();
+    $body->write(json_encode($class_));
+
+    return $newResponse;
+})->setName('termin-info');
 // }}}
 
 $app->run();
-
 
 // {{{ Helper methods
 function getClassesByStudent($id) {
@@ -106,4 +124,9 @@ function getClassesByStudent($id) {
 
     return $subjects;
 }
+
+function isLoggedIn() {
+    return isset($_COOKIE['student_id']);
+}
+
 // }}}
