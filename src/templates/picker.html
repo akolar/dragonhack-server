@@ -6,6 +6,7 @@
       <label for="subject" class="col-sm-2 control-label">Predmet</label>
       <div class="col-sm-4">
         <select class="form-control" id="subject" name="subject">
+          <option value="">---------</option>
         {% for subj in class_info %}
           <option value="{{ subj.id }}">{{ subj.name }}</option>
         {% endfor %}
@@ -15,9 +16,25 @@
 
     <div class="form-group">
       <label for="termins" class="col-sm-2 control-label">Termini</label>
-      <div class="col-sm-4">
+      <div id="termin-holder" class="col-sm-4">
         Prosimo izberite predmet (dopolnimo z JS).
       </div>
     </div>
   </form>
+{% endblock %}
+
+{% block js %}
+$('#subject').change(function() {
+  $.ajax({
+    url: '/api/termin/' + $(this).val(),
+  })
+  .done(function(data) {
+    var html = ""
+    for (var i = 0; i < data.length; i++) {
+      html += '<div class="checkbox"><label><input type="checkbox" value="'+ data[i].id +'">'+ data[i].hour+ ':00 v '+ data[i].room +'</label></div>';
+    }
+
+    $("#termin-holder").html(html);
+  });
+});
 {% endblock %}
