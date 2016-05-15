@@ -32,5 +32,5 @@ body > .container {
 /* }}} */
 
 #termini_form {
-  visibility: hidden;
+  display: none;
 }
