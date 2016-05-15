@@ -14,126 +14,12 @@
       </div>
     </div>
 
-    <div class="form-group" id="termini_form">
+    <div class="form-group">
       <label for="termins" class="col-sm-2 control-label">Termini</label>
       <div id="termin-holder" class="col-sm-4">
-        Prosimo izberite predmet (dopolnimo z JS).
+        Prosimo izberite predmet
       </div>
     </div>
-
-<div style="
-            width:620px;
-            height:700px;
-            background-color: #A9A9A9;
-            ">
-  <style>
-.urnikBox {background-color:#EFEFEF;width: 100px;height: 40px;float: left;margin-right: 3px;margin-bottom: 4px;}
-</style>
-<div id="u7" class="urnikBox">7:00</div>
-<div id="p7" class="urnikBox"></div>
-<div id="t7" class="urnikBox"></div>
-<div id="s7" class="urnikBox"></div>
-<div id="c7" class="urnikBox"></div>
-<div id="pe7" class="urnikBox"></div>
-
-<div id="u8" class="urnikBox">8:00</div>
-<div id="p8" class="urnikBox"></div>
-<div id="t8" class="urnikBox"></div>
-<div id="s8" class="urnikBox"></div>
-<div id="c8" class="urnikBox"></div>
-<div id="pe8" class="urnikBox"></div>
-
-<div id="u9" class="urnikBox">9:00</div>
-<div id="p9" class="urnikBox"></div>
-<div id="t9" class="urnikBox"></div>
-<div id="s9" class="urnikBox"></div>
-<div id="c9" class="urnikBox"></div>
-<div id="pe9" class="urnikBox"></div>
-
-<div id="u10" class="urnikBox">10:00</div>
-<div id="p10" class="urnikBox"></div>
-<div id="t10" class="urnikBox"></div>
-<div id="s10" class="urnikBox"></div>
-<div id="c10" class="urnikBox"></div>
-<div id="pe10" class="urnikBox"></div>
-
-<div id="u11" class="urnikBox">11:00</div>
-<div id="p11" class="urnikBox"></div>
-<div id="t11" class="urnikBox"></div>
-<div id="s11" class="urnikBox"></div>
-<div id="c11" class="urnikBox"></div>
-<div id="pe11" class="urnikBox"></div>
-
-<div id="u12" class="urnikBox">12:00</div>
-<div id="p12" class="urnikBox"></div>
-<div id="t12" class="urnikBox"></div>
-<div id="s12" class="urnikBox"></div>
-<div id="c12" class="urnikBox"></div>
-<div id="pe12" class="urnikBox"></div>
-
-<div id="u13" class="urnikBox">13:00</div>
-<div id="p13" class="urnikBox"></div>
-<div id="t13" class="urnikBox"></div>
-<div id="s13" class="urnikBox"></div>
-<div id="c13" class="urnikBox"></div>
-<div id="pe13" class="urnikBox"></div>
-
-<div id="u14" class="urnikBox">14:00</div>
-<div id="p14" class="urnikBox"></div>
-<div id="t14" class="urnikBox"></div>
-<div id="s14" class="urnikBox"></div>
-<div id="c14" class="urnikBox"></div>
-<div id="pe14" class="urnikBox"></div>
-
-<div id="u15" class="urnikBox">15:00</div>
-<div id="p15" class="urnikBox"></div>
-<div id="t15" class="urnikBox"></div>
-<div id="s15" class="urnikBox"></div>
-<div id="c15" class="urnikBox"></div>
-<div id="pe15" class="urnikBox"></div>
-
-<div id="u16" class="urnikBox">16:00</div>
-<div id="p16" class="urnikBox"></div>
-<div id="t16" class="urnikBox"></div>
-<div id="s16" class="urnikBox"></div>
-<div id="c16" class="urnikBox"></div>
-<div id="pe16" class="urnikBox"></div>
-
-<div id="u17" class="urnikBox">17:00</div>
-<div id="p17" class="urnikBox"></div>
-<div id="t17" class="urnikBox"></div>
-<div id="s17" class="urnikBox"></div>
-<div id="c17" class="urnikBox"></div>
-<div id="pe17" class="urnikBox"></div>
-
-<div id="u18" class="urnikBox">18:00</div>
-<div id="p18" class="urnikBox"></div>
-<div id="t18" class="urnikBox"></div>
-<div id="s18" class="urnikBox"></div>
-<div id="c18" class="urnikBox"></div>
-<div id="pe18" class="urnikBox"></div>
-
-<div id="u19" class="urnikBox">19:00</div>
-<div id="p19" class="urnikBox"></div>
-<div id="t19" class="urnikBox"></div>
-<div id="s19" class="urnikBox"></div>
-<div id="c19" class="urnikBox"></div>
-<div id="pe19" class="urnikBox"></div>
-
-<div id="u20" class="urnikBox">20:00</div>
-<div id="p20" class="urnikBox"></div>
-<div id="t20" class="urnikBox"></div>
-<div id="s20" class="urnikBox"></div>
-<div id="c20" class="urnikBox"></div>
-<div id="pe20" class="urnikBox"></div>
-
-<div id="u21" class="urnikBox">21:00</div>
-<div id="p21" class="urnikBox"></div>
-<div id="t21" class="urnikBox"></div>
-<div id="s21" class="urnikBox"></div>
-<div id="c21" class="urnikBox"></div>
-<div id="pe21" class="urnikBox"></div>
-</div>
 
     <div class="form-group">
       <div class="col-sm-offset-2">
@@ -144,7 +30,6 @@
 {% endblock %}
 
 {% block js %}
-var a=[{"a":" "},{"a":"p"},{"a":"t"},{"a":"s"},{"a":"c"},{"a":"pe"}];
 var day_id = {
   1: 'Ponedeljek',
   2: 'Torek',
@@ -157,9 +42,7 @@ $('#subject').change(function() {
   $.ajax({
     url: '/api/termin/' + $(this).val(),
   })
-  .done(function(d) {
-    var nasTermin = d.us;
-    var data = d.class;
+  .done(function(data) {
     var html = ""
     for (var i = 0; i < data.length; i++) {
       html += '<div class="checkbox"><label><input type="checkbox" value="'+ data[i].id +'" name="termin[]">'+ day_id[data[i].day] +', '+ data[i].hour+ ':00 v '+ data[i].room +'</label></div>';
@@ -167,78 +50,6 @@ $('#subject').change(function() {
 
     $("#termin-holder").html(html);
     $("button[type='submit']").removeClass("hidden");
-
-    for(var i=0;i<data.length;++i){
-      for(var j=i+1;j<data.length;++j){
-	if(parseInt(data[j].day)<parseInt(data[i].day)||(parseInt(data[j].day)==parseInt(data[i].day)&&parseInt(data[j].hour)<parseInt(data[i].hour))){
-          var tmp=data[j];
-	  data[j]=data[i];
-	  data[i]=tmp;
-	}
-      }
-    }
-
-
-    var start=0,end,maxp=1,ends=new Array(50),endss=0,endse=1;
-    ends[0]=parseInt(data[0].hour)+2;
-    for(var i=1;i<data.length;++i){
-      if(parseInt(data[i-1].hour)+2<=parseInt(data[i].hour)||parseInt(data[i-1].day)<parseInt(data[i].day)){
-	insertDemTerms(start,i-1,maxp, data, nasTermin);
-	start=i;
-	maxp=1;
-	endss=0;
-	endse=1;
-	ends[0]=parseInt(data[i].hour)+2;
-      }
-      else{
-	for(var j=endss;j<endse;++j){
-	  if(ends[j]<=parseInt(data[i].hour)){
-	    endss++;
-	  }
-	}
-	ends[endse]=parseInt(data[i].hour)+2;
-	endse++;
-	if(maxp<endse-endss){
-	  maxp=endse-endss;
-	}
-	if(i==data.length-1){
-	  console.log(data);
-	  insertDemTerms(start,i,maxp, data, nasTermin);
-	}
-      }
-    }
-    document.getElementById("s"+nasTermin).style+="background-color:#CAEBF2;cursor:default"; 
   });
 });
-function select(event){
-	var z=event.target.id;
-	z=z.substring(1);
-	$('input[value="'+ z +'"]').attr("selected", "selected");
-	event.target.style += "background-color: lightblue";
-}
-function insertDemTerms( start,end, maxp, data, nasTermin){
-  console.log(data);
-  var ar=new Array(maxp);
-  for(var i=0;i<maxp;++i){
-    ar[i]=-1
-  }
-  for(var i=start;i<=end;++i){
-    for(var j=0;j<maxp;++j){
-      if(ar[j]==-1||ar[j]<=parseInt(data[i].hour)){
-	console.log(data[i]);
-	console.log(parseInt(data[i].day));
-	document.getElementById(a[parseInt(data[i].day)]
-			      .a+data[i].hour)
-			      .innerHTML+='<div id="s'+data[i].id+'" style="cursor:pointer; color: #104020; position:relative;z-index:1;margin-bottom:-80px;margin-left:'+(100/maxp)*j+'px;width:'+96/maxp+'px;height:80px;background-color:#FF3B3F;">'
-			   +data[i].room+'</div>';
-			   if(parseInt(data[i].id)!=nasTermin){
-					document.getElementById("s"+data[i].id).addEventListener("click",select,false);
-			   }
-	ar[j]=parseInt(data[i].hour)+2;
-	break;
-      }
-    }
-  }
-  
-}
 {% endblock %}

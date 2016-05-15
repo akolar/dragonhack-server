@@ -102,20 +102,14 @@ $app->get('/api/termin/{id}', function ($request, $response, $args) {
     
     $student_id = $_COOKIE['student_id'];
 
-    $json = array();
     $cl_id = $args['id'];
     $classQuery = $database->prepare("SELECT t.day, t.id, t.hour, t.room FROM termin t INNER JOIN subject s ON t.subject_id=s.id WHERE s.id_fri=$cl_id");
     $classQuery->execute();
     $class_ = $classQuery->fetchAll();
-    $json['class'] = $class_;
 
-    $ourQuery = $database->prepare("SELECT t.id FROM student s INNER JOIN termin t ON s.term_id=t.id INNER JOIN subject su ON su.id=t.subject_id WHERE s.student_id=$student_id AND su.id_fri=$cl_id");
-    $ourQuery->execute();
-    $res = $ourQuery->fetchAll();
-    $json['us'] = count($res) > 0 ? $res[0]['id'] : null;
     $newResponse = $response->withHeader('Content-type', 'application/json');
     $body = $newResponse->getBody();
-    $body->write(json_encode($json));
+    $body->write(json_encode($class_));
 
     return $newResponse;
 })->setName('termin-info');
