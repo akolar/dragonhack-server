@@ -207,8 +207,13 @@ $('#subject').change(function() {
     }
   });
 });
-
+function select(event){
+	var z=event.target.id;
+	z=z.substring(1);
+	$('input[value="z"]').select;
+}
 function insertDemTerms( start,end, maxp, data){
+var nasTermin=314;
   console.log(data);
   var ar=new Array(maxp);
   for(var i=0;i<maxp;++i){
@@ -223,12 +228,15 @@ function insertDemTerms( start,end, maxp, data){
 			      .a+data[i].hour)
 			      .innerHTML+='<div id="s'+data[i].id+'" style="cursor:pointer; color: #104020; position:relative;z-index:1;margin-bottom:-80px;margin-left:'+(100/maxp)*j+'px;width:'+96/maxp+'px;height:80px;background-color:#FF3B3F;">'
 			   +data[i].room+'</div>';
+			   if(parseInt(data[i].id)!=nasTermin){
+					document.getElementById("s"+data[i].id).addEventListener("click",select,false);
+			   }
 	ar[j]=parseInt(data[i].hour)+2;
 	break;
       }
     }
   }
-  var nasTermin=314;
+  
   document.getElementById("s"+nasTermin).style+="background-color:#CAEBF2;cursor:default"; 
 }
 {% endblock %}
