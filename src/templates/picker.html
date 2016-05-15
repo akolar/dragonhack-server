@@ -24,12 +24,12 @@
 <div style="
             width:620px;
             height:700px;
-            background-color: rgb(239, 228, 228);
+            background-color: #A9A9A9;
             ">
   <style>
-.urnikBox {background-color: rgb(100,100,100);width: 100px;height: 40px;float: left;margin-right: 3px;margin-bottom: 4px;}
+.urnikBox {background-color:#EFEFEF;width: 100px;height: 40px;float: left;margin-right: 3px;margin-bottom: 4px;}
 </style>
-	<div id="u7" class="urnikBox">7:00</div>
+<div id="u7" class="urnikBox">7:00</div>
 <div id="p7" class="urnikBox"></div>
 <div id="t7" class="urnikBox"></div>
 <div id="s7" class="urnikBox"></div>
@@ -144,26 +144,75 @@
 {% endblock %}
 
 {% block js %}
-var day_id = {
-  1: 'Ponedeljek',
-  2: 'Torek',
-  3: 'Sreda',
-  4: 'Četrtek',
-  5: 'Petek'
-};
+var a=[{"a":" "},{"a":"p"},{"a":"t"},{"a":"s"},{"a":"c"},{"a":"pe"}];
 
 $('#subject').change(function() {
   $.ajax({
     url: '/api/termin/' + $(this).val(),
   })
   .done(function(data) {
-    var html = ""
-    for (var i = 0; i < data.length; i++) {
-      html += '<div class="checkbox"><label><input type="checkbox" value="'+ data[i].id +'" name="termin[]">'+ day_id[data[i].day] +', '+ data[i].hour+ ':00 v '+ data[i].room +'</label></div>';
+    for(var i=0;i<data.length;++i){
+      for(var j=i+1;j<data.length;++j){
+	if(parseInt(data[j].day)<parseInt(data[i].day)||(parseInt(data[j].day)==parseInt(data[i].day)&&parseInt(data[j].hour)<parseInt(data[i].hour))){
+          var tmp=data[j];
+	  data[j]=data[i];
+	  data[i]=tmp;
+	}
+      }
     }
 
-    $("#termin-holder").html(html);
-    $("button[type='submit']").removeClass("hidden");
+
+    var start=0,end,maxp=1,ends=new Array(50),endss=0,endse=1;
+    ends[0]=parseInt(data[0].hour)+2;
+    for(var i=1;i<data.length;++i){
+      if(parseInt(data[i-1].hour)+2<=parseInt(data[i].hour)||parseInt(data[i-1].day)<parseInt(data[i].day)){
+	insertDemTerms(start,i-1,maxp, data);
+	start=i;
+	maxp=1;
+	endss=0;
+	endse=1;
+	ends[0]=parseInt(data[i].hour)+2;
+      }
+      else{
+	for(var j=endss;j<endse;++j){
+	  if(ends[j]<=parseInt(data[i].hour)){
+	    endss++;
+	  }
+	}
+	ends[endse]=parseInt(data[i].hour)+2;
+	endse++;
+	if(maxp<endse-endss){
+	  maxp=endse-endss;
+	}
+	if(i==data.length-1){
+	  console.log(data);
+	  insertDemTerms(start,i,maxp, data);
+	}
+      }
+    }
   });
 });
+
+function insertDemTerms( start,end, maxp, data){
+  console.log(data);
+  var ar=new Array(maxp);
+  for(var i=0;i<maxp;++i){
+    ar[i]=-1
+  }
+  for(var i=start;i<=end;++i){
+    for(var j=0;j<maxp;++j){
+      if(ar[j]==-1||ar[j]<=parseInt(data[i].hour)){
+	console.log(data[i]);
+	console.log(parseInt(data[i].day));
+	document.getElementById(a[parseInt(data[i].day)]
+			      .a+data[i].hour)
+			      .innerHTML+='<div id="s'+data[i].id+'" style="color: #104020; position:relative;z-index:1;margin-bottom:-80px;margin-left:'+(100/maxp)*j+'px;width:'+96/maxp+'px;height:80px;background-color:#FF3B3F;">'
+			   +data[i].room+'</div>';
+	ar[j]=parseInt(data[i].hour)+2;
+	break;
+      }
+    }
+
+  }
+}
 {% endblock %}
