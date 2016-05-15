@@ -1,5 +1,4 @@
 <?php
-
 $db['host'] = 'localhost';
 $db['user'] = 'root';
 $db['pass'] = 'toor';
@@ -18,11 +17,9 @@ catch (PDOException $e) {
 $classQuery = $PDO->prepare("SELECT `id` FROM `subject`");
 $classQuery->execute();
 $class_ = $classQuery->fetchAll();
-//var_dump($class_);
-	
+
 foreach($class_ as $predmet)
 {
-	//var_dump($predmet);
 	//posamezen predmet
 	$data = array();
 
@@ -50,7 +47,8 @@ foreach($class_ as $predmet)
 	}
 	//echo "Data:\r\n";
 	//print_r($data);
-	
+	//die();
+	if(count($data) == 0) continue;
 	$command = count($data)." ";
 	foreach($data as $id => $termins) //za vsakega studenta
 	{
@@ -62,6 +60,7 @@ foreach($class_ as $predmet)
 		$termin = $userTerminSql->fetchAll();
 		
 		$termin = $termin[0]['term_id']; //uporabnikov termin
+		echo "$termin\r\n";
 		$stWanted = count($termins); //stevilo zelja
 		//$termins //zeljeni termini
 		
@@ -72,11 +71,14 @@ foreach($class_ as $predmet)
 			$command .= ' '.$t;
 		}
 		$command .= ' ';
+		//$command .= "\r\n";
 	}	
 	//$solved  = exec('java Main ' + trim($command));
 	
-	$comand = 'java Production '.trim($command);
-	exec ($comand , $output , $return_value  ) ;
+	$comand2 = trim('java Production '.trim($command));
+	var_dump($comand2);
+	//die();
+	exec ($comand2 , $output , $return_value  ) ;
 	if(strlen($output[0] == 0))
 	{
 		continue;
