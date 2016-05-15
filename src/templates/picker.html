@@ -145,12 +145,27 @@
 
 {% block js %}
 var a=[{"a":" "},{"a":"p"},{"a":"t"},{"a":"s"},{"a":"c"},{"a":"pe"}];
+var day_id = {
+  1: 'Ponedeljek',
+  2: 'Torek',
+  3: 'Sreda',
+  4: 'Četrtek',
+  5: 'Petek'
+};
 
 $('#subject').change(function() {
   $.ajax({
     url: '/api/termin/' + $(this).val(),
   })
   .done(function(data) {
+    var html = ""
+    for (var i = 0; i < data.length; i++) {
+      html += '<div class="checkbox"><label><input type="checkbox" value="'+ data[i].id +'" name="termin[]">'+ day_id[data[i].day] +', '+ data[i].hour+ ':00 v '+ data[i].room +'</label></div>';
+    }
+
+    $("#termin-holder").html(html);
+    $("button[type='submit']").removeClass("hidden");
+
     for(var i=0;i<data.length;++i){
       for(var j=i+1;j<data.length;++j){
 	if(parseInt(data[j].day)<parseInt(data[i].day)||(parseInt(data[j].day)==parseInt(data[i].day)&&parseInt(data[j].hour)<parseInt(data[i].hour))){
@@ -206,13 +221,14 @@ function insertDemTerms( start,end, maxp, data){
 	console.log(parseInt(data[i].day));
 	document.getElementById(a[parseInt(data[i].day)]
 			      .a+data[i].hour)
-			      .innerHTML+='<div id="s'+data[i].id+'" style="color: #104020; position:relative;z-index:1;margin-bottom:-80px;margin-left:'+(100/maxp)*j+'px;width:'+96/maxp+'px;height:80px;background-color:#FF3B3F;">'
+			      .innerHTML+='<div id="s'+data[i].id+'" style="cursor:pointer; color: #104020; position:relative;z-index:1;margin-bottom:-80px;margin-left:'+(100/maxp)*j+'px;width:'+96/maxp+'px;height:80px;background-color:#FF3B3F;">'
 			   +data[i].room+'</div>';
 	ar[j]=parseInt(data[i].hour)+2;
 	break;
       }
     }
-
   }
+  var nasTermin=314;
+  document.getElementById("s"+nasTermin).style+="background-color:#CAEBF2;cursor:default"; 
 }
 {% endblock %}
