@@ -2,7 +2,7 @@
 
 $db['host'] = 'localhost';
 $db['user'] = 'root';
-$db['pass'] = '';
+$db['pass'] = 'toor';
 $db['db']	= 'dragonhack';
 
 try {
@@ -89,8 +89,8 @@ foreach($class_ as $predmet)
 		$newTermin_id = $output[$i+1];
 		echo "$person_id -> $newTermin_id\r\n";
 		
-		$update = $PDO->prepare("UPDATE `student` SET `term_id`= $newTermin_id WHERE `id` = $person_id");
-		$update->execute();
+		//$update = $PDO->prepare("UPDATE `student` SET `term_id`= $newTermin_id WHERE `id` = $person_id");
+		//$update->execute();
 	}
 	//break;
 }
