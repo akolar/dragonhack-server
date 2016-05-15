@@ -157,7 +157,9 @@ $('#subject').change(function() {
   $.ajax({
     url: '/api/termin/' + $(this).val(),
   })
-  .done(function(data) {
+  .done(function(d) {
+    var nasTermin = d.us;
+    var data = d.class;
     var html = ""
     for (var i = 0; i < data.length; i++) {
       html += '<div class="checkbox"><label><input type="checkbox" value="'+ data[i].id +'" name="termin[]">'+ day_id[data[i].day] +', '+ data[i].hour+ ':00 v '+ data[i].room +'</label></div>';
@@ -181,7 +183,7 @@ $('#subject').change(function() {
     ends[0]=parseInt(data[0].hour)+2;
     for(var i=1;i<data.length;++i){
       if(parseInt(data[i-1].hour)+2<=parseInt(data[i].hour)||parseInt(data[i-1].day)<parseInt(data[i].day)){
-	insertDemTerms(start,i-1,maxp, data);
+	insertDemTerms(start,i-1,maxp, data, nasTermin);
 	start=i;
 	maxp=1;
 	endss=0;
@@ -201,19 +203,20 @@ $('#subject').change(function() {
 	}
 	if(i==data.length-1){
 	  console.log(data);
-	  insertDemTerms(start,i,maxp, data);
+	  insertDemTerms(start,i,maxp, data, nasTermin);
 	}
       }
     }
+    document.getElementById("s"+nasTermin).style+="background-color:#CAEBF2;cursor:default"; 
   });
 });
 function select(event){
 	var z=event.target.id;
 	z=z.substring(1);
-	$('input[value="z"]').select;
+	$('input[value="'+ z +'"]').attr("selected", "selected");
+	event.target.style += "background-color: lightblue";
 }
-function insertDemTerms( start,end, maxp, data){
-var nasTermin=314;
+function insertDemTerms( start,end, maxp, data, nasTermin){
   console.log(data);
   var ar=new Array(maxp);
   for(var i=0;i<maxp;++i){
@@ -237,6 +240,5 @@ var nasTermin=314;
     }
   }
   
-  document.getElementById("s"+nasTermin).style+="background-color:#CAEBF2;cursor:default"; 
 }
 {% endblock %}
